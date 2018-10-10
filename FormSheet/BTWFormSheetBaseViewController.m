@@ -1,18 +1,15 @@
 
-
 #import "BTWFormSheetBaseViewController.h"
 
-#import "BTWFormSheetMaskView.h"
-
+#import "BTWFormSheetNavigationController.h"
 //#import <Masonry.h>
 
-@interface BTWFormSheetBaseViewController ()
-{
-    BTWFormSheetMaskView *_maskView;
-}
+static CGFloat const kFormSheetNavigationBarHeight = 44;
 
-@property (nonatomic, strong) UIView *cornerView;
+@interface BTWFormSheetBaseViewController ()
+
 @property (nonatomic, strong, readwrite) BTWFormSheetNavigationBar *formSheetNaviBar;
+@property (nonatomic, strong) UIView *cornerView;
 
 @property (nonatomic, strong) BTWFormSheetNavigationController *formSheetNaviController;
 
@@ -33,7 +30,9 @@
 }
 
 - (void)dealloc {
+    
     NSLog(@"%s", __func__);
+    
 }
 
 #pragma mark - setup subViews
@@ -54,71 +53,16 @@
 //    }];
 }
 
-#pragma mark - childVC navigationController
+#pragma mark - public
 
-- (void)navigationControllerAddToTargetViewController:(UIViewController *)targetVC navigationControlleViewSize:(CGSize)naviCViewSize transitionStyle:(BTWFormSheetTransitionStyle)transitionStyle
+- (void)showNavigationControllerFromTargetViewController:(UIViewController *)targetViewController navigationControllerViewSize:(CGSize)viewSize
 {
-    [self.formSheetNaviController addToTargetViewController:targetVC formSheetNavigationControllerViewSize:naviCViewSize transitionStyle:transitionStyle];
+    [self.formSheetNaviController showFormSheetNavigationControllerFromTargetViewController:targetViewController formSheetNavigationControllerViewSize:viewSize];
 }
 
-- (void)navigationControllerRemoveFromTargetViewController:(UIViewController *)targetVC transitionStyle:(BTWFormSheetTransitionStyle)transitionStyle
+- (void)disappearNavigationController
 {
-    [self.formSheetNaviController removeFromTargetViewController:targetVC transitionStyle:transitionStyle];
-}
-
-#pragma mark - childVC 无 navigationController
-
-- (void)addToWindowRootViewControllerWithViewSize:(CGSize)viewSize
-{
-    UIViewController *windowRootVC = [UIApplication sharedApplication].delegate.window.rootViewController;
-    
-    BOOL hasContainFormSheet = [windowRootVC.childViewControllers containsObject:self];
-    
-    if ((windowRootVC == nil) || CGSizeEqualToSize(viewSize, CGSizeZero) || hasContainFormSheet) {
-        return;
-    }
-    
-    _maskView = [[BTWFormSheetMaskView alloc] initWithFrame:windowRootVC.view.frame];
-    _maskView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-    
-    [windowRootVC.view addSubview:_maskView];
-    
-    __weak typeof(self) weakSelf = self;
-    _maskView.bgClickBlock = ^{
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        [strongSelf removeFromWindowRootViewController];
-    };
-    
-    [windowRootVC addChildViewController:self];
-    self.view.bounds = CGRectMake(0, 0, viewSize.width, viewSize.height);
-    self.view.center = windowRootVC.view.center;
-    [windowRootVC.view addSubview:self.view];
-    [self didMoveToParentViewController:windowRootVC];
-}
-
-- (void)removeFromWindowRootViewController
-{
-    UIViewController *windowRootVC = [UIApplication sharedApplication].delegate.window.rootViewController;
-    
-    BOOL hasContainFormSheet = [windowRootVC.childViewControllers containsObject:self];
-    
-    if (hasContainFormSheet == NO) {
-        return;
-    }
-    
-    [self willMoveToParentViewController:nil];
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
-    
-    if (self.vcDidRemoveBlock) {
-        self.vcDidRemoveBlock();
-    }
-    
-    BOOL hasContainMaskView = [windowRootVC.view.subviews containsObject:_maskView];
-    
-    if (hasContainMaskView) {
-        [_maskView removeFromSuperview];
-    }
+    [self.formSheetNaviController disappearFormSheetNavigationController];
 }
 
 #pragma mark - lazy
@@ -150,16 +94,17 @@
         _formSheetNaviController = [[BTWFormSheetNavigationController alloc] initWithRootViewController:self];
         
         __weak typeof(self) weakSelf = self;
-        
-        _formSheetNaviController.didRemoveBlock = ^{
-            
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            
-            if (strongSelf.naviCDidRemoveBlock) {
-                strongSelf.naviCDidRemoveBlock();
+
+        _formSheetNaviController.didDismissNavigationBlock = ^{
+
+            if (weakSelf.disappearNaviCBlock) {
+                weakSelf.disappearNaviCBlock();
             }
-            strongSelf.formSheetNaviController = nil;
+            
+            weakSelf.formSheetNaviController = nil;
+            
         };
+        
     }
     return _formSheetNaviController;
 }

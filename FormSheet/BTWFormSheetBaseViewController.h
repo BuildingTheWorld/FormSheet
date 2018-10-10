@@ -1,55 +1,32 @@
 
-
+#import <UIKit/UIKit.h>
 #import "BTWFormSheetNavigationBar.h"
-#import "BTWFormSheetNavigationController.h"
-
-static CGFloat const kFormSheetNavigationBarHeight = 44;
 
 /**
- BTWFormSheetNavigationController 移除回调
+ FormSheetNavigationController Dismiss 回调
  */
-typedef void(^BTWFormSheetNaviCDidRemoveBlock)(void);
-
-/**
- BTWIPadFormSheetBaseViewController 移除回调
- */
-typedef void(^BTWFormSheetVCDidRemoveBlock)(void);
+typedef void(^BTWDidDisappearNaviCBlock)(void);
 
 @interface BTWFormSheetBaseViewController : UIViewController
 
+/**
+ Present FormSheetNavigationController
+
+ @param targetViewController presentingViewController
+ @param viewSize formSheetNavigationController view size
+ */
+- (void)showNavigationControllerFromTargetViewController:(UIViewController *)targetViewController navigationControllerViewSize:(CGSize)viewSize;
+
+/**
+ Dismiss FormSheetNavigationController
+ */
+- (void)disappearNavigationController;
+
+/**
+ 可通过此属性配置 FormSheetNavigationBar
+ */
 @property (nonatomic, strong, readonly) BTWFormSheetNavigationBar *formSheetNaviBar;
 
-/**
- 将 BTWFormSheetNavigationController 添加到 targetVC
-
- @param targetVC 目标VC
- @param naviCViewSize BTWFormSheetNavigationController 控制器的 View 的 Size
- @param transitionStyle 添加时的动画样式
- */
-- (void)navigationControllerAddToTargetViewController:(UIViewController *)targetVC navigationControlleViewSize:(CGSize)naviCViewSize transitionStyle:(BTWFormSheetTransitionStyle)transitionStyle;
-
-/**
- 将 BTWFormSheetNavigationController 从 targetVC 移除
-
- @param targetVC 目标VC
- @param transitionStyle 移除时的动画样式
- */
-- (void)navigationControllerRemoveFromTargetViewController:(UIViewController *)targetVC transitionStyle:(BTWFormSheetTransitionStyle)transitionStyle;
-
-@property (nonatomic, strong) BTWFormSheetNaviCDidRemoveBlock naviCDidRemoveBlock;
-
-/**
- 将 BTWFormSheetBaseViewController 添加到 UIWindow 的 RootViewController
-
- @param viewSize BTWFormSheetBaseViewController 控制器的 View 的 Size
- */
-- (void)addToWindowRootViewControllerWithViewSize:(CGSize)viewSize;
-
-/**
- 将 CSIPadFormSheetBaseViewController 从 UIWindow 的 RootViewController 移除
- */
-- (void)removeFromWindowRootViewController;
-
-@property (nonatomic, strong) BTWFormSheetVCDidRemoveBlock vcDidRemoveBlock;
+@property (nonatomic, strong) BTWDidDisappearNaviCBlock disappearNaviCBlock;
 
 @end

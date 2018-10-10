@@ -1,5 +1,4 @@
 
-
 #import "BTWFormSheetNavigationBar.h"
 
 //#import <Masonry.h>
@@ -84,7 +83,7 @@
 - (UIButton *)backButton {
     if (_backButton == nil) {
         _backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_backButton setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
+        [_backButton setImage:[UIImage imageNamed:@"icon_ipad_nav_back_n"] forState:UIControlStateNormal];
         [_backButton addTarget:self action:@selector(backButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         _backButton.hidden = YES;
     }
@@ -102,7 +101,7 @@
 - (UIView *)bottonLineView {
     if (_bottonLineView == nil) {
         _bottonLineView = [[UIView alloc] init];
-//        _bottonLineView.backgroundColor = ;
+//        _bottonLineView.backgroundColor = [UIColor colorWithRGB:0xE4E7EB];
     }
     return _bottonLineView;
 }
