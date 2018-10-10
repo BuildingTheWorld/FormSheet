@@ -45,15 +45,6 @@
     _maskView.frame = containerView.bounds;
     _maskView.alpha = 0.0;
     
-    __weak typeof(self) weakSelf = self;
-    
-    _maskView.didTapGesBlock = ^{
-        
-        if (weakSelf.shouldDismissBlock) {
-            weakSelf.shouldDismissBlock();
-        }
-    };
-    
     [containerView addSubview:_maskView];
     
     if ([presentedViewController transitionCoordinator])
