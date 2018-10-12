@@ -17,6 +17,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.view.layer.cornerRadius = 10;
+    self.view.layer.masksToBounds = YES;
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {

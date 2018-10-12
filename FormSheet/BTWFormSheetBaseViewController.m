@@ -39,12 +39,8 @@ static CGFloat const kFormSheetNavigationBarHeight = 44;
 
 - (void)setUpSubViews
 {
-    [self.view addSubview:self.cornerView];
     [self.view addSubview:self.formSheetNaviBar];
     
-//    [self.cornerView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.edges.offset(0);
-//    }];
 //    [self.formSheetNaviBar mas_makeConstraints:^(MASConstraintMaker *make) {
 //        make.width.offset(375);
 //        make.height.offset(kFormSheetNavigationBarHeight);
