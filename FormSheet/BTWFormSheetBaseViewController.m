@@ -9,7 +9,6 @@ static CGFloat const kFormSheetNavigationBarHeight = 44;
 @interface BTWFormSheetBaseViewController ()
 
 @property (nonatomic, strong, readwrite) BTWFormSheetNavigationBar *formSheetNaviBar;
-@property (nonatomic, strong) UIView *cornerView;
 
 @property (nonatomic, strong) BTWFormSheetNavigationController *formSheetNaviController;
 
@@ -62,15 +61,6 @@ static CGFloat const kFormSheetNavigationBarHeight = 44;
 }
 
 #pragma mark - lazy
-
-- (UIView *)cornerView {
-    if (_cornerView == nil) {
-        _cornerView = [[UIView alloc] init];
-        _cornerView.layer.cornerRadius = 10;
-        _cornerView.backgroundColor = [UIColor whiteColor];
-    }
-    return _cornerView;
-}
 
 - (BTWFormSheetNavigationBar *)formSheetNaviBar {
     if (_formSheetNaviBar == nil) {
