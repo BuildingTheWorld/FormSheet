@@ -28,7 +28,7 @@
 {
     if (self.didTapGesBlock) {
         
-        [self removeGestureRecognizer:self.tapGes];
+//        [self removeGestureRecognizer:self.tapGes];
         
         self.didTapGesBlock();
     }

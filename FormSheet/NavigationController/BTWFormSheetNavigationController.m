@@ -9,8 +9,12 @@
 {
     __weak id _keyboardShowObserver;
     __weak id _keyboardHideObserver;
-    CGSize _formSheetViewSize;
 }
+
+@property (nonatomic, assign) CGSize formSheetViewSize;
+
+@property (nonatomic, assign, getter=isVisibleKeyboard) BOOL visibleKeyboard;
+
 @end
 
 @implementation BTWFormSheetNavigationController
@@ -97,16 +101,25 @@
 
     __weak typeof(self) weakSelf = self;
     
-    presentationVC.shouldDismissBlock = ^{
+    presentationVC.didTapMaskViewBlock = ^{
         
-        [weakSelf dismissViewControllerAnimated:YES completion:^{
+        if (weakSelf.isVisibleKeyboard == YES)
+        {
+            [self.topViewController.view endEditing:YES];
             
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            
-            if (strongSelf.didDismissNavigationBlock) {
-                strongSelf.didDismissNavigationBlock();
-            }
-        }];
+            weakSelf.visibleKeyboard = NO;
+        }
+        else
+        {
+            [weakSelf dismissViewControllerAnimated:YES completion:^{
+                
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                
+                if (strongSelf.didDismissNavigationBlock) {
+                    strongSelf.didDismissNavigationBlock();
+                }
+            }];
+        }
     };
 
     return presentationVC;
@@ -120,18 +133,42 @@
 
     _keyboardShowObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillShowNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
 
+        weakSelf.visibleKeyboard = YES;
+        
         NSNumber *durationAsNumber = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
         double durationAsDouble = durationAsNumber.doubleValue;
-
-        [UIView animateWithDuration:durationAsDouble animations:^{
+        
+        NSValue *frameAsValue = note.userInfo[UIKeyboardFrameEndUserInfoKey];
+        CGRect frameAsCGRect = frameAsValue.CGRectValue;
+        CGFloat kbHeight = frameAsCGRect.size.height;
+        
+        CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+        
+        CGFloat availableHeight = screenHeight - kbHeight;
+        
+        if (availableHeight <= weakSelf.formSheetViewSize.height) {
             
-//            weakSelf.view.top = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
-        }];
+            [UIView animateWithDuration:durationAsDouble animations:^{
+                
+//                weakSelf.view.top = CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
+            }];
+            
+        } else {
+            
+            CGFloat vcY = (availableHeight - weakSelf.formSheetViewSize.height) / 2;
+            
+            [UIView animateWithDuration:durationAsDouble animations:^{
+                
+//                weakSelf.view.top = vcY;
+            }];
+        }
 
     }];
 
     _keyboardHideObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
 
+        weakSelf.visibleKeyboard = NO;
+        
         NSNumber *durationAsNumber = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
         double durationAsDouble = durationAsNumber.doubleValue;
 

@@ -26,8 +26,8 @@
 
         _maskView.didTapGesBlock = ^{
             
-            if (weakSelf.shouldDismissBlock) {
-                weakSelf.shouldDismissBlock();
+            if (weakSelf.didTapMaskViewBlock) {
+                weakSelf.didTapMaskViewBlock();
             }
         };
     }

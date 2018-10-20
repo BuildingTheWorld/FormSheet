@@ -3,11 +3,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^BTWShouldDismissBlock)(void);
+typedef void(^BTWDidTapMaskViewBlock)(void);
 
 @interface BTWFormSheetPresentationController : UIPresentationController
 
-@property (nonatomic, strong) BTWShouldDismissBlock shouldDismissBlock;
+@property (nonatomic, strong) BTWDidTapMaskViewBlock didTapMaskViewBlock;
 
 @end
 
